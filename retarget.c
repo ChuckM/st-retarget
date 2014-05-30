@@ -57,7 +57,7 @@ int _write (int fd, char *ptr, int len)
    * Return number of char written.
    * Need implementing with UART here. */
 	int i = 0;
-	while (*ptr) {
+	while (*ptr && (i < len)) {
 		usart_send_blocking(USART6, *ptr);
 		if (*ptr == '\n') {
 			usart_send_blocking(USART6, '\r');
