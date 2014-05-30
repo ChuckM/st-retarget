@@ -1,8 +1,11 @@
 Retargeting Newlib-nano
 ------------------------
 
-This is a simple test case of retargeting newlib nano which doesn't seem
-to work. 
+This is a simple test case of retargeting newlib nano which ~~doesn't seem
+to work~~ now works. The issue was that "Hello World!" did not include a 
+newline (\n) so the stdio buffer didn't flush, and the `_write_r` function
+was too lenient about strings (it isn't null terminated so you have to stop
+after you've printed `len` characters)
 
 The goal here was to build a program using both the ARM
 [embedded GCC](https://launchpad.net/gcc-arm-embedded) project and the
@@ -21,7 +24,7 @@ identify where the sources are (it picks up the startup code from there)
 
 Diffs of my makefile.conf and the original:
 
-<pre>
+```
 st-retarget$ diff makefile.conf ~/gcc-arm-none-eabi-4_8-2014q1/share/gcc-arm-none-eabi/samples/src/makefile.conf 
 2c2
 < CORTEX_M=4
@@ -31,7 +34,7 @@ st-retarget$ diff makefile.conf ~/gcc-arm-none-eabi-4_8-2014q1/share/gcc-arm-non
 < BASE=/home/cmcmanis/gcc-arm-none-eabi-4_8-2014q1/share/gcc-arm-none-eabi/samples
 ---
 > BASE=../..
-</pre>
+```
 
 The Makefile was altered in some important ways;
 
@@ -43,7 +46,7 @@ The Makefile was altered in some important ways;
 
 Diffs of my Makefile and the original:
 
-<pre>
+```
 st-retarget$ diff Makefile ~/gcc-arm-none-eabi-4_8-2014q1/share/gcc-arm-none-eabi/samples/src/retarget/Makefile                   
 1c1                                                                                                 
 < include makefile.conf                                                                             
@@ -57,7 +60,7 @@ st-retarget$ diff Makefile ~/gcc-arm-none-eabi-4_8-2014q1/share/gcc-arm-none-eab
 < LDSCRIPTS=-L. -L$(BASE)/ldscripts -T gcc.ld -L../../libopencm3/lib -lopencm3_stm32f4              
 ---                                                                                                 
 > LDSCRIPTS=-L. -L$(BASE)/ldscripts -T gcc.ld
-</pre>
+```
 
 If you look at retarget.c you will see that in `retarget_init()` I call my modified `_write` 
 function to verify that its working as expected.
