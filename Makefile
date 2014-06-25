@@ -1,4 +1,28 @@
-include makefile.conf
+# Use newlib-nano. 
+USE_NANO=--specs=nano.specs
+USE_NOHOST=--specs=nosys.specs
+
+BASE=/home/cmcmanis/gcc-arm-none-eabi-4_8-2014q1/share/gcc-arm-none-eabi/samples
+
+# Compiler & Linker
+CC=arm-none-eabi-gcc
+CXX=arm-none-eabi-g++
+
+# Options for specific architecture
+ARCH_FLAGS=-mthumb -mcpu=cortex-m4
+
+# Startup code
+STARTUP=$(BASE)/startup/startup_ARMCM4.S
+
+# -Os -flto -ffunction-sections -fdata-sections to compile for code size
+CFLAGS=$(ARCH_FLAGS) $(STARTUP_DEFS) -Os -flto -ffunction-sections -fdata-sections
+CXXFLAGS=$(CFLAGS)
+
+# Link for code size
+GC=-Wl,--gc-sections
+
+# Create map file
+MAP=-Wl,-Map=$(NAME).map
 NAME=retarget
 
 STARTUP_DEFS=-D__STARTUP_CLEAR_BSS -D__START=main
@@ -14,7 +38,7 @@ LDSCRIPTS=-L. -L$(BASE)/ldscripts -T gcc.ld -L../../libopencm3/lib -lopencm3_stm
 
 LFLAGS=$(USE_NANO) $(USE_NOHOST) $(LDSCRIPTS) $(GC) $(MAP)
 
-$(NAME)-$(CORE).axf: main.c $(NAME).c $(STARTUP)
+$(NAME).axf: main.c $(NAME).c $(STARTUP)
 	$(CC) $^ $(CFLAGS) $(LFLAGS) -o $@
 
 clean:
