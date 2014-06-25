@@ -67,16 +67,9 @@ int _write (int fd, char *ptr, int len)
 
 int _read (int fd, char *ptr, int len)
 {
-  /* Read "len" of char to "ptr" from file id "fd"
-   * Return number of char read.
-   * Need implementing with UART here. */
-	int	i = 0;
-	while (i < len) {
-		*ptr = usart_recv_blocking(USART6);
-		ptr++;
-		i++;
-	}
-  return i;
+  /* not used in this example */
+  *ptr = usart_recv_blocking(USART6);
+  return 1;
 }
 
 void _ttywrch(int ch) {
