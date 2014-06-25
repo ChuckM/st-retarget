@@ -44,12 +44,9 @@ void retarget_init()
 	usart_set_flow_control(USART6, USART_FLOWCONTROL_NONE);
 	usart_enable(USART6);
 
-	_write(0, "UART OK\n", 8);
 /* *** Added Code End *** */
 
 }
-
-int foo = 22;
 
 int _write (int fd, char *ptr, int len)
 {
